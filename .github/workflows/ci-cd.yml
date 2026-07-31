@@ -38,8 +38,8 @@ jobs:
       # Name: "Run automated tests"
       # Hint: run: npm run <script-name>
       # ============================================================
-      # - name: Run automated tests
-      #   run: ___
+      - name: Run automated tests
+        run: npm run test
 
   # ---------------------------------------------------------------
   # STAGE 2: DEPLOY PREVIEW
@@ -65,12 +65,12 @@ jobs:
       #   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
       # Name this step: "Deploy preview to Vercel"
       # ============================================================
-      # - name: Deploy preview to Vercel
-      #   uses: amondnet/vercel-action@v25
-      #   with:
-      #     vercel-token: ___
-      #     vercel-org-id: ___
-      #     vercel-project-id: ___
+      - name: Deploy preview to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 
   # ---------------------------------------------------------------
   # STAGE 3: DEPLOY PRODUCTION
@@ -93,10 +93,10 @@ jobs:
       # add the flag that tells Vercel this is a production release,
       # not a preview. Name this step: "Deploy to production"
       # ============================================================
-      # - name: Deploy to production
-      #   uses: amondnet/vercel-action@v25
-      #   with:
-      #     vercel-token: ___
-      #     vercel-org-id: ___
-      #     vercel-project-id: ___
-      #     vercel-args: ___
+      - name: Deploy to production
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: --prod
