@@ -1,0 +1,13 @@
+{
+  "name": "x67-day10-cicd-demo",
+  "version": "1.0.0",
+  "description": "x67 Day 10 Worksheet Task 2 - CI/CD pipeline starter project (GitHub Actions -> Vercel)",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "dev": "vercel dev"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

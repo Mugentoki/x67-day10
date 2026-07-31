@@ -1,0 +1,102 @@
+name: CI/CD - Build, Test, Deploy to Vercel
+
+# This pipeline mirrors what you designed conceptually in Task 1 and Task 2:
+# every push runs Test -> Build -> Deploy, with different deploy targets for
+# a Pull Request (preview) vs. main (production).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ---------------------------------------------------------------
+  # STAGE 1: TEST
+  # Every pipeline run starts here. Nothing gets built or deployed
+  # if this stage fails - that is the whole point of CI.
+  # ---------------------------------------------------------------
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      # ============================================================
+      # TODO 1 (~10 min):
+      # Add the step that actually runs the automated test suite
+      # from Task 1's discussion of "which steps should be automated".
+      # Use the "test" script defined in package.json.
+      # Name: "Run automated tests"
+      # Hint: run: npm run <script-name>
+      # ============================================================
+      # - name: Run automated tests
+      #   run: ___
+
+  # ---------------------------------------------------------------
+  # STAGE 2: DEPLOY PREVIEW
+  # Runs only for Pull Requests, so reviewers can click through a
+  # real, isolated preview URL before anything reaches production -
+  # this is the "kontrollierte Bereitstellung" (controlled delivery)
+  # concept from UE1.
+  # ---------------------------------------------------------------
+  deploy-preview:
+    name: Deploy Preview (Vercel)
+    needs: test
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ============================================================
+      # TODO 2 (~15 min):
+      # Deploy a PREVIEW build to Vercel (no --prod flag).
+      # Use the amondnet/vercel-action action. You will need three
+      # GitHub Actions secrets (created in README.md's setup steps):
+      #   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+      # Name this step: "Deploy preview to Vercel"
+      # ============================================================
+      # - name: Deploy preview to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ___
+      #     vercel-org-id: ___
+      #     vercel-project-id: ___
+
+  # ---------------------------------------------------------------
+  # STAGE 3: DEPLOY PRODUCTION
+  # Runs only on main, and only after tests pass on main - this is
+  # the "Freigabeprozess" (release gate) from the Coaching reflection
+  # questions: nothing reaches production without passing Test first.
+  # ---------------------------------------------------------------
+  deploy-production:
+    name: Deploy Production (Vercel)
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ============================================================
+      # TODO 3 (~15 min):
+      # Deploy to PRODUCTION this time - same action as TODO 2, but
+      # add the flag that tells Vercel this is a production release,
+      # not a preview. Name this step: "Deploy to production"
+      # ============================================================
+      # - name: Deploy to production
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ___
+      #     vercel-org-id: ___
+      #     vercel-project-id: ___
+      #     vercel-args: ___
