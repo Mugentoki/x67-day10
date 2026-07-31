@@ -3,7 +3,7 @@ const { greet } = require("../lib/greet");
 describe("greet()", () => {
   test("uses the provided name", () => {
     expect(greet("Tio")).toBe(
-      "Hello, Tio! This response was deployed by a CI/CD pipeline."
+      "Greetings, Tio! Have a good day!"
     );
   });
 
