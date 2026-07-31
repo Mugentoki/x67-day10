@@ -66,7 +66,7 @@ jobs:
       # Name this step: "Deploy preview to Vercel"
       # ============================================================
       - name: Deploy preview to Vercel
-        uses: amondnet/vercel-action@v25
+        uses: amondnet/vercel-action@v47
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
@@ -94,7 +94,7 @@ jobs:
       # not a preview. Name this step: "Deploy to production"
       # ============================================================
       - name: Deploy to production
-        uses: amondnet/vercel-action@v25
+        uses: amondnet/vercel-action@v47
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
