@@ -25,7 +25,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install dependencies
         run: npm install
@@ -57,20 +57,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       # ============================================================
       # TODO 2 (~15 min):
       # Deploy a PREVIEW build to Vercel (no --prod flag).
-      # Use the amondnet/vercel-action action. You will need three
-      # GitHub Actions secrets (created in README.md's setup steps):
+      # Use the Vercel CLI to deploy the project.
+      #
+      # The GitHub Actions secrets are:
       #   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
-      # Name this step: "Deploy preview to Vercel"
+      #
+      # The project is configured explicitly below because GitHub
+      # Actions starts from a clean checkout without a .vercel folder.
       # ============================================================
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Configure Vercel project
+        run: |
+          mkdir -p .vercel
+          echo '{
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}",
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID }}"
+          }' > .vercel/project.json
+
       - name: Deploy preview to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: vercel deploy --token="${{ secrets.VERCEL_TOKEN }}"
 
   # ---------------------------------------------------------------
   # STAGE 3: DEPLOY PRODUCTION
@@ -87,16 +102,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
       # ============================================================
       # TODO 3 (~15 min):
-      # Deploy to PRODUCTION this time - same action as TODO 2, but
-      # add the flag that tells Vercel this is a production release,
-      # not a preview. Name this step: "Deploy to production"
+      # Deploy to PRODUCTION this time - same deployment mechanism
+      # as TODO 2, but add the flag that tells Vercel this is a
+      # production release, not a preview.
+      #
+      # Name this step: "Deploy to production"
+      #
+      # Note the important difference from TODO 2:
+      #   Preview:    vercel deploy
+      #   Production: vercel deploy --prod
       # ============================================================
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Configure Vercel project
+        run: |
+          mkdir -p .vercel
+          echo '{
+            "orgId": "${{ secrets.VERCEL_ORG_ID }}",
+            "projectId": "${{ secrets.VERCEL_PROJECT_ID }}"
+          }' > .vercel/project.json
+
       - name: Deploy to production
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: --prod
+        run: vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}"
